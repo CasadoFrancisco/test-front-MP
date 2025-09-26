@@ -1,0 +1,18 @@
+export default function Failure() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-100">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-md text-center">
+        <h1 className="text-2xl font-bold mb-4 text-red-600">Pago fallido</h1>
+        <p className="mb-6">
+          Hubo un problema al procesar tu pago. Por favor, intenta nuevamente.
+        </p>
+        <a 
+          href="/"
+          className="inline-block py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition duration-200"
+        >
+          Volver al inicio
+        </a>
+      </div>
+    </div>
+  );
+}
