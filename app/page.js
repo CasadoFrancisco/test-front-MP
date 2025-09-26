@@ -48,7 +48,7 @@ export default function Home() {
 
     try {
       // Usar la URL de localtunnel para el backend en lugar de localhost
-      const response = await fetch('https://plain-ducks-rhyme.loca.lt/create-preference', {
+      const response = await fetch('https://test-back-mp-production.up.railway.app/create-preference', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
