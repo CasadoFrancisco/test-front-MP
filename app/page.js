@@ -13,13 +13,24 @@ export default function Home() {
 
   // Inicializar el SDK de Mercado Pago
   useEffect(() => {
-    // Reemplaza "TEST-XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" con tu public key real
-    const mp = new MercadoPago('APP_USR-1f7a290b-34da-4d82-af35-12ab9dfdef3c', {
-      locale: 'es-AR'
-    });
+    // Verificar si el script de Mercado Pago ya está cargado
+    const initMercadoPago = () => {
+      if (window.MercadoPago) {
+        // Reemplaza con tu public key real
+        const mp = new window.MercadoPago('APP_USR-1f7a290b-34da-4d82-af35-12ab9dfdef3c', {
+          locale: 'es-AR'
+        });
+        
+        // Puedes guardar la instancia en window para usarla en otras partes si es necesario
+        window.mercadoPagoInstance = mp;
+      } else {
+        // Si no está cargado, intentar de nuevo en 100ms
+        setTimeout(initMercadoPago, 100);
+      }
+    };
     
-    // Puedes guardar la instancia en window para usarla en otras partes si es necesario
-    window.mercadoPagoInstance = mp;
+    // Iniciar el proceso de verificación
+    initMercadoPago();
   }, []);
 
   const handleChange = (e) => {
