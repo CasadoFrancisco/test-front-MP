@@ -16,7 +16,7 @@ export default function Home() {
   // Inicializar el SDK de Mercado Pago
   useEffect(() => {
     // Inicializar Mercado Pago SDK
-    initMercadoPago('APP_USR-1f7a290b-34da-4d82-af35-12ab9dfdef3c', {
+    initMercadoPago('APP_USR-bce34eee-fe48-4e08-9ceb-48d466d26790', {
       locale: 'es-AR'
     });
   }, []);
