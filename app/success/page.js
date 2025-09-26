@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Success() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-gray-100">
@@ -6,12 +8,12 @@ export default function Success() {
         <p className="mb-6">
           Tu pago ha sido procesado correctamente. Recibirás un email con los datos de acceso a la aplicación.
         </p>
-        <a 
+        <Link 
           href="/"
           className="inline-block py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition duration-200"
         >
           Volver al inicio
-        </a>
+        </Link>
       </div>
     </div>
   );
