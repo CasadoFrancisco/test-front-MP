@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
       >
         {children}
         <Script
-          src="https://sdk.mercadopago.com/js/v2"
+          src="https://sdk.mercadopago.com/js/v2?locale=es-AR"
           strategy="afterInteractive"
         />
       </body>
