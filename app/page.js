@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -10,27 +11,14 @@ export default function Home() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [preferenceId, setPreferenceId] = useState(null);
 
   // Inicializar el SDK de Mercado Pago
   useEffect(() => {
-    // Verificar si el script de Mercado Pago ya está cargado
-    const initMercadoPago = () => {
-      if (window.MercadoPago) {
-        // Reemplaza con tu public key real
-        const mp = new window.MercadoPago('APP_USR-1f7a290b-34da-4d82-af35-12ab9dfdef3c', {
-          locale: 'es-AR'
-        });
-        
-        // Puedes guardar la instancia en window para usarla en otras partes si es necesario
-        window.mercadoPagoInstance = mp;
-      } else {
-        // Si no está cargado, intentar de nuevo en 100ms
-        setTimeout(initMercadoPago, 100);
-      }
-    };
-    
-    // Iniciar el proceso de verificación
-    initMercadoPago();
+    // Inicializar Mercado Pago SDK
+    initMercadoPago('APP_USR-1f7a290b-34da-4d82-af35-12ab9dfdef3c', {
+      locale: 'es-AR'
+    });
   }, []);
 
   const handleChange = (e) => {
@@ -59,8 +47,8 @@ export default function Home() {
       const data = await response.json();
 
       if (data.success) {
-        // Redirigir al usuario a la página de pago de Mercado Pago
-        window.location.href = data.redirectUrl;
+        // En lugar de redireccionar, guardamos el preferenceId para usar con el componente Wallet
+        setPreferenceId(data.preferenceId);
       } else {
         setError(data.error || 'Ocurrió un error al procesar el pago');
       }
@@ -83,61 +71,67 @@ export default function Home() {
           </div>
         )}
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="nombre" className="block mb-1 font-medium">
-              Nombre completo
-            </label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="email" className="block mb-1 font-medium">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="servicio" className="block mb-1 font-medium">
-              Servicio
-            </label>
-            <select
-              id="servicio"
-              name="servicio"
-              value={formData.servicio}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+        {!preferenceId ? (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="nombre" className="block mb-1 font-medium">
+                Nombre completo
+              </label>
+              <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="email" className="block mb-1 font-medium">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="servicio" className="block mb-1 font-medium">
+                Servicio
+              </label>
+              <select
+                id="servicio"
+                name="servicio"
+                value={formData.servicio}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="Servicio Premium">Servicio Premium - $1000</option>
+                <option value="Servicio Básico">Servicio Básico - $500</option>
+              </select>
+            </div>
+            
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition duration-200"
             >
-              <option value="Servicio Premium">Servicio Premium - $1000</option>
-              <option value="Servicio Básico">Servicio Básico - $500</option>
-            </select>
+              {loading ? 'Procesando...' : 'Pagar con Mercado Pago'}
+            </button>
+          </form>
+        ) : (
+          <div className="mt-4">
+            <Wallet initialization={{ preferenceId }} />
           </div>
-          
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition duration-200"
-          >
-            {loading ? 'Procesando...' : 'Pagar con Mercado Pago'}
-          </button>
-        </form>
+        )}
       </div>
     </main>
   );
